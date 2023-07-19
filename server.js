@@ -15,7 +15,7 @@ const db = mysql.createConnection(
     console.log(`Connected to employee_db database.`)
 );
 
-function start () {
+function starter () {
     inquirer.prompt(
         {
             type: 'list',
@@ -68,3 +68,50 @@ function start () {
             }
         })
 };
+
+function viewAllDepartments () {
+    const query = `SELECT id, department_name AS department FROM department`;
+    db.query(query, (err, result) => {
+        if (err) throw err;
+        console.table(result);
+        starter();
+    });
+}
+
+function viewAllRoles () {
+    const query = `SELECT id, title, salary, department_id AS title FROM role`;
+    db.query(query, (err, result) => {
+        if (err) throw err;
+        console.table(result);
+        starter();
+    });
+}
+
+function viewAllEmployees () {
+    const query = `SELECT id, first_name, last_name AS name FROM employee`;
+    db.query(query, (err, result) => {
+        if (err) throw err;
+        console.table(result);
+        starter();
+    });
+}
+
+function addDepartment () {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Please name the new department",
+            name: "newDepartment",
+        }
+    ])
+    .then((response) => {
+        const query = `INSERT INTO department (department_name) VALUES (?)`;
+        const params =[response.newDepartment];
+
+        db.query(query, params, (err, results) => {
+            if (err) throw err;
+            console.log(`Successfully added ${response.newDepartment} to departments`)
+
+        })
+    })
+}
